@@ -3,6 +3,7 @@ import "dotenv/config";
 import { DynamicModule, Provider } from "@nestjs/common";
 import { APP_GUARD } from "@nestjs/core";
 import { JwtModule } from "@nestjs/jwt";
+import { CacheRevokeTokenService } from "../cache/lib/cache.revoke.token.service";
 import { JwtAuthGuard } from "./lib/jwt.authguard";
 import { JWTGuardModuleAsyncOptions } from "./lib/jwt.guard.module.async.options";
 import { JWTGuardModuleOptions } from "./lib/jwt.guard.module.options";
@@ -20,6 +21,7 @@ export class JwtGuardModule {
             JwtAuthGuard,
             JwtStrategy,
             JWTSignService,
+            CacheRevokeTokenService,
             {
                 provide: JWTGuardModuleOptions,
                 useValue: options,
@@ -44,7 +46,7 @@ export class JwtGuardModule {
      * @returns
      */
     static registerAsync(options: JWTGuardModuleAsyncOptions): DynamicModule {
-        const providers: Provider[] = [JwtAuthGuard, JwtStrategy, JWTSignService];
+        const providers: Provider[] = [JwtAuthGuard, JwtStrategy, JWTSignService, CacheRevokeTokenService];
         if (options.useFactory) {
             providers.push({
                 provide: JWTGuardModuleOptions,

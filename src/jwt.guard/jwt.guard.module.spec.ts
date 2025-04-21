@@ -1,5 +1,6 @@
 import { INestApplication } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
+import { CacheModule } from "../cache/cache.module";
 import { JwtGuardModule } from "./jwt.guard.module";
 import { JWTSignService } from "./service/jwt.sign.service";
 
@@ -10,6 +11,7 @@ describe("jwt.guard.module register", () => {
     it("register", async () => {
         const moduleRef = await Test.createTestingModule({
             imports: [
+                CacheModule.register({ global: true, redisUri: "", workspace: "test" }),
                 JwtGuardModule.register({
                     isGlobal: true,
                     autoRegister: false,
@@ -20,11 +22,13 @@ describe("jwt.guard.module register", () => {
         const svc = moduleRef.get(JWTSignService);
         expect(svc).toBeDefined();
         expect(svc.secret).toBe("test");
+        moduleRef.close();
     });
 
     it("registerAsync", async () => {
         const moduleRef = await Test.createTestingModule({
             imports: [
+                CacheModule.register({ global: true, redisUri: "", workspace: "test" }),
                 JwtGuardModule.registerAsync({
                     useFactory: () => {
                         return {
@@ -39,5 +43,6 @@ describe("jwt.guard.module register", () => {
         const svc = moduleRef.get(JWTSignService);
         expect(svc).toBeDefined();
         expect(svc.secret).toBe("test1");
+        moduleRef.close();
     });
 });
