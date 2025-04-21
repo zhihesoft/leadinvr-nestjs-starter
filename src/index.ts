@@ -9,10 +9,18 @@ export { FileNameEncodePipe, FileNamesEncodePipe } from "./common//lib/filename.
 export { getPackageVersion } from "./common//lib/package.info";
 export * from "./common//lib/util";
 
+/** logger module */
+export { createWinstonLogger, WinstonLogger } from "./logger/lib/common.logger";
+export { RequestExceptionFilter } from "./logger/lib/request.exception.filter";
+export { RequestLoggerInterceptor } from "./logger/lib/request.logger.interceptor";
+export { LoggerModule } from "./logger/logger.module";
+
+
 /** jwt guard module */
 export { JwtGuardModule } from "./jwt.guard/jwt.guard.module";
 export { Public } from "./jwt.guard/lib/public.decorator";
 export { JWTSignService } from "./jwt.guard/service/jwt.sign.service";
+
 
 export { startup } from "./starter/starter";
 
