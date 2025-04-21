@@ -1,0 +1,1 @@
+export type JWTCheckCallback = (token: string) => Promise<boolean>;
