@@ -7,7 +7,8 @@ export { CommonError } from "./common//lib/common.error";
 export { Failed, FailedCallback } from "./common//lib/failed";
 export { FileNameEncodePipe, FileNamesEncodePipe } from "./common//lib/filename.encode.pipe";
 export { getPackageVersion } from "./common//lib/package.info";
-export * from "./common//lib/util";
+export * from "./common/lib/string.util";
+export * from "./common/lib/util";
 
 /** logger module */
 export { createWinstonLogger, WinstonLogger } from "./logger/lib/common.logger";
