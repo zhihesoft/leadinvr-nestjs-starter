@@ -17,6 +17,7 @@ export class AppOption {
     bodyParserLimit?: string;
     imports?: any[];
     providers?: Provider[];
+    controllers?: any[];
 }
 
 export function startup(options: AppOption) {

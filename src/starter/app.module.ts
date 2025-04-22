@@ -24,6 +24,7 @@ export class AppModule {
                 ...(options.imports ?? []),
             ],
             providers: options.providers ?? [],
+            controllers: options.controllers ?? [],
         };
     }
 }
