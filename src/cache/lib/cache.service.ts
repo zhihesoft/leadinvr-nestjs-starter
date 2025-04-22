@@ -1,4 +1,4 @@
-import { Inject, Injectable, OnModuleDestroy } from "@nestjs/common";
+import { Inject, Injectable, Logger, OnModuleDestroy } from "@nestjs/common";
 import Redis from "ioredis";
 import { CACHE_MODULE_OPTIONS } from "./cache.module.constants";
 import { CacheModuleOptions } from "./cache.module.options";
@@ -7,14 +7,22 @@ import { CacheModuleOptions } from "./cache.module.options";
 export class CacheService implements OnModuleDestroy {
     constructor(@Inject(CACHE_MODULE_OPTIONS) private readonly options: CacheModuleOptions) {
         const url: string | undefined = options.redisUri;
-        this.redis = new Redis(url);
+        if (url && url.length > 0) {
+            this.redis = new Redis(url);
+        } else {
+            logger.warn(`Redis uri is not set, cache service is disabled`);
+        }
     }
 
     onModuleDestroy() {
-        this.redis.quit();
+        this.redis?.quit();
     }
 
-    private readonly redis: Redis;
+    get disabled(): boolean {
+        return !this.redis;
+    }
+
+    private readonly redis?: Redis;
 
     /**
      * get or set key value
@@ -58,6 +66,9 @@ export class CacheService implements OnModuleDestroy {
      * @param key
      */
     async remove(key: string): Promise<void> {
+        if (!this.redis) {
+            return;
+        }
         if (key.includes("*") || key.includes("?")) {
             await this.removeAll(key);
         } else {
@@ -71,9 +82,12 @@ export class CacheService implements OnModuleDestroy {
      * @param keyPattern
      */
     async removeAll(keyPattern: string): Promise<void> {
+        if (!this.redis) {
+            return;
+        }
         const key = this.getKey(keyPattern);
         const keys = await this.redis.keys(key);
-        await Promise.all(keys.map(k => this.redis.del(k)));
+        await Promise.all(keys.map(k => this.redis!.del(k)));
     }
 
     /**
@@ -82,6 +96,9 @@ export class CacheService implements OnModuleDestroy {
      * @returns
      */
     async has(key: string): Promise<boolean> {
+        if (!this.redis) {
+            return false;
+        }
         const ret = await this.getValue(key);
         return !!ret;
     }
@@ -91,6 +108,10 @@ export class CacheService implements OnModuleDestroy {
     }
 
     private async setValue(key: string, value: any, seconds?: number | string): Promise<void> {
+        if (!this.redis) {
+            return;
+        }
+
         key = this.getKey(key);
         const data = { value };
         const json = JSON.stringify(data);
@@ -123,15 +144,18 @@ export class CacheService implements OnModuleDestroy {
                         throw new Error(`Invalid ttl unit: ${unit}`);
                 }
             }
-            await this.redis.setex(key, seconds, json);
+            await this.redis!.setex(key, seconds, json);
         } else {
-            await this.redis.set(key, json);
+            await this.redis!.set(key, json);
         }
     }
 
     private async getValue<T>(key: string): Promise<T | undefined> {
+        if (!this.redis) {
+            return undefined;
+        }
         key = this.getKey(key);
-        const data = await this.redis.get(key);
+        const data = await this.redis!.get(key);
         if (!data) {
             return undefined;
         }
@@ -139,3 +163,5 @@ export class CacheService implements OnModuleDestroy {
         return json.value as T;
     }
 }
+
+const logger = new Logger(CacheService.name);

@@ -28,5 +28,5 @@ export { JwtGuardModule } from "./jwt.guard/jwt.guard.module";
 export { Public } from "./jwt.guard/lib/public.decorator";
 export { JWTSignService } from "./jwt.guard/service/jwt.sign.service";
 
-export { AppOption as StarterOption, startup } from "./starter/starter";
+export { AppOption, startup } from "./starter/starter";
 

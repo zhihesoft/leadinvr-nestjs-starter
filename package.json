@@ -1,11 +1,6 @@
 {
-    "config": {
-        "commitizen": {
-            "path": "./node_modules/cz-conventional-changelog"
-        }
-    },
     "name": "@leadinvr/nestjs-starter",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "startup for nestjs projects",
     "main": "./dist/index.js",
     "files": [
