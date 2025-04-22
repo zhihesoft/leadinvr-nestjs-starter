@@ -65,4 +65,3 @@ async function main(pkg: PackageInfoDto, options: AppOption) {
     await app.listen(process.env.PORT ?? 3000);
 }
 
-startup({});
