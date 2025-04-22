@@ -1,6 +1,6 @@
 {
     "name": "@leadinvr/nestjs-starter",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "startup for nestjs projects",
     "main": "./dist/index.js",
     "files": [

@@ -19,6 +19,7 @@ export { LoggerModule } from "./logger/logger.module";
 export { CacheModule } from "./cache/cache.module";
 export { CacheModuleAsyncOptions } from "./cache/lib/cache.module.async.options";
 export { CacheModuleOptions } from "./cache/lib/cache.module.options";
+export { CacheRevokeTokenService } from "./cache/lib/cache.revoke.token.service";
 export { CacheService } from "./cache/lib/cache.service";
 export { Cached, RevokeCache } from "./cache/lib/cached.decorator";
 export { CachedMeta } from "./cache/lib/cached.meta";
