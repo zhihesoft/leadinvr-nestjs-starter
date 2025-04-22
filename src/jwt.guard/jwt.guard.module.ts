@@ -35,7 +35,7 @@ export class JwtGuardModule {
             global: options.isGlobal || true,
             module: JwtGuardModule,
             providers,
-            imports: [JwtModule.register({ secret: options.secret })],
+            imports: [JwtModule.register({ secret: options.secret, global: true })],
             exports: [JwtAuthGuard, JWTSignService, JWTGuardModuleOptions],
         };
     }
