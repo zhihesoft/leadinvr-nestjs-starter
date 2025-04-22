@@ -1,6 +1,7 @@
 import "dotenv/config";
 
-import { DynamicModule } from "@nestjs/common";
+import { DynamicModule, ValidationPipe } from "@nestjs/common";
+import { APP_PIPE } from "@nestjs/core";
 import { CacheModule } from "../cache/cache.module";
 import { CacheRevokeTokenService } from "../cache/lib/cache.revoke.token.service";
 import { CommonModule } from "../common/common.module";
@@ -31,7 +32,7 @@ export class AppModule {
                 }),
                 ...(options.imports ?? []),
             ],
-            providers: options.providers ?? [],
+            providers: Array.from(options.providers ?? []).concat({ provide: APP_PIPE, useClass: ValidationPipe }),
             controllers: options.controllers ?? [],
         };
     }
