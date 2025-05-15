@@ -18,7 +18,7 @@ export class RequestExceptionFilter implements ExceptionFilter {
 
         const ret = {
             code: exception.code ?? -1,
-            message: exception.response ?? exception.message ?? "Unknown Error",
+            message: exception.message ?? exception.response?.error ?? "Unknown Error",
         };
 
         requestLogger.error(`|- (${ret.code}) ${ret.message}`);
