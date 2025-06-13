@@ -19,13 +19,41 @@ starter module for nestjs
 
 # Quick Start
 
--   Install
+## Install
 
 ```bash
 npm i @leadinvr/nestjs-starter
 ```
 
--   Usage
+## Usage
+
+### Environment Setup
+
+启动模块需要设置以下环境变量
+
+-   REDIS_URL (可选)
+
+    Redis 的连接地址，如果未设置，cache 模块将使用内存作为缓存容器
+
+    Example: REDIS_URL="redis://username:password@localhost:6379"
+
+-   CACHE_TTL (可选)
+
+    缓存缺省时间，单位（秒），如果未设置，则为 10s
+
+    Example: CACHE_TTL: 10
+
+-   JWT_SECRET
+
+    JWT 加密密钥，用于 JWT 签名和 JWT 验证
+
+-   JWT_ISSUER (可选)
+
+    JWT 签发方，如未设置，则为 package.json 中的包名
+
+-   JWT_AUDIENCE (可选)
+
+    JWT 使用场景，如未设置，则为 package.json 中的包名
 
 ```ts
 startup({
@@ -327,7 +355,5 @@ export class CacheRevokeTokenService {
 
 ## JWT Guard Module
 
-- Guard for JWT
-Use environment variable JWT_SECRET to set the jwt secret
-
-
+-   Guard for JWT
+    Use environment variable JWT_SECRET to set the jwt secret
