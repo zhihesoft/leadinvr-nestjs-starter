@@ -1,6 +1,6 @@
 {
     "name": "@leadinvr/nestjs-starter",
-    "version": "1.2.0",
+    "version": "1.2.2",
     "description": "startup for nestjs projects",
     "main": "./dist/index.js",
     "files": [
@@ -27,7 +27,7 @@
     "homepage": "https://github.com/zhihesoft/leadinvr-nestjs-starter#readme",
     "dependencies": {
         "@leadinvr/cache": "^1.2.8",
-        "@leadinvr/common": "^1.1.2",
+        "@leadinvr/common": "^1.1.6",
         "@leadinvr/jwt-guard": "^1.1.8",
         "@leadinvr/logger": "^1.0.6",
         "@nestjs/jwt": "^11.0.0",
