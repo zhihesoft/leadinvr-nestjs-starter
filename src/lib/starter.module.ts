@@ -14,9 +14,9 @@ import { Module } from "@nestjs/common";
             isGlobal: true,
             redisUrl: process.env.REDIS_URI ?? "",
             workspace: process.env.WORKSPACE ?? "default",
-            ttl: Number(process.env.CACHE_TTL) ?? 10, // 1 day
+            ttl: Number(process.env.CACHE_TTL) ?? 10, // 10s
         }),
-        JwtGuardModule.forRoot({
+        JwtGuardModule.register({
             redisUrl: process.env.REDIS_URI ?? "",
             secret: process.env.JWT_SECRET ?? "default-secret",
             issuer: process.env.JWT_ISSUER ?? "default-issuer",
