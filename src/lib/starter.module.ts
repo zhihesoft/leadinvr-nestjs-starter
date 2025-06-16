@@ -28,6 +28,7 @@ export class StarterModule extends StarterModuleClass {
                 ttl: options.redisTTL,
             }),
             JwtGuardModule.register({
+                isGlobal: true,
                 redisUrl: options.redisUrl,
                 secret: options.jwtSecret,
                 issuer: options.jwtIssuer,
