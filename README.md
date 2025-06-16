@@ -29,331 +29,48 @@ npm i @leadinvr/nestjs-starter
 
 ### Environment Setup
 
-启动模块需要设置以下环境变量
-
--   REDIS_URL (可选)
-
-        Redis 的连接地址，如果未设置，cache 模块将使用内存作为缓存容器
-
-        Example: REDIS_URL="redis://username:password@localhost:6379"
-
--   CACHE_TTL (可选)
-
-        缓存缺省时间，单位（秒），如果未设置，则为 10s
-
-        Example: CACHE_TTL: 10
-
--   JWT_SECRET
-
-        JWT 加密密钥，用于 JWT 签名和 JWT 验证
-
--   JWT_ISSUER (可选)
-
-        JWT 签发方，如未设置，则为 package.json 中的包名
-
--   JWT_AUDIENCE (可选)
-
-        JWT 使用场景，如未设置，则为 package.json 中的包名
-
-```ts
-startup({
-    imports: [SomeModule ...],
-    controllers: [SomeController ...],
-    providers: [SomeProvider ...]
-})
-```
-
-# Modules
-
-## Common Module
-
-### Utils
-
--   wait for seconds
+启动模块需要设置以下变量
 
 ```ts
 /**
- * Wait for seconds
- * @param seconds
- * @returns
+ * StarterOption interface for configuring the NestJS application.
+ * It includes options for body parser limit, CORS, and an initialization function.
  */
-export async function waitForSeconds(seconds: number): Promise<void>;
-```
-
--   Bypass compile warning for unused parameters
-
-```ts
-/**
- * Bypass TypeScript error for unused parameters
- * @param parameters
- */
-export function forgot(...parameters: unknown[]);
-```
-
--   Generate a random length string
-
-```ts
-/**
- * Generate a random string of given length
- * @param length Length of the string to generate
- * @returns Random string
- */
-export function randomString(length: number): string'
-```
-
--   Normalize number in a spec range
-
-```ts
-/**
- * Normalize a number to be within a specified range. [min, max]
- * If the number is less than the minimum, it will return the minimum.
- * If the number is greater than the maximum, it will return the maximum.
- * If the number is within the range, it will return the number itself.
- */
-export function normalizeNumber(value: number, min: number, max: number): number;
-```
-
-### String utils
-
--   Replace all in string
-
-```ts
-/**
- * Replace all occurrences of a string in another string with a new string.
- * This function uses the String.prototype.replaceAll method to replace all occurrences of a substring with a new string.
- * @param value
- * @param pairs
- * @returns
- */
-export function replaceString(value: string, ...pairs: string[][]): string;
-```
-
--   Split string
-
-```ts
-/**
- * Split a string by multiple delimiters
- * This function replaces all occurrences of the specified delimiters with a unique string and then splits the string by that unique string.
- * @param value
- * @param splitter
- * @returns
- */
-export function splitString(value: string, ...splitter: string[]): string[];
-```
-
--   Unescape HTML entity
-
-```ts
-/**
- * Unescape HTML entities in a string
- * This function replaces HTML entities with their corresponding characters.
- * @param htmlEntity String to unescape
- * @returns Unescaped string
- */
-export function unescapeHTML(htmlEntity: string): string;
-```
-
-### Failed
-
--   Fire exception when condition is truely
-
-```ts
-Failed.on(condition, `messages ...`);
-Failed.on(condition, () => `messages ...`);
-Failed.on(condition, () => new Error());
-```
-
--   Fire exception when condition is falsy
-
-```ts
-Failed.onFalsy(condition, `messages ...`);
-Failed.onFalsy(condition, () => `messages ...`);
-Failed.onFalsy(condition, () => new Error());
-```
-
-## Crypto
-
-```ts
-@Injectable()
-export class CryptoService {
+export class StarterModuleOptions {
     /**
-     * User bcrytp to hash password
-     * @param password
-     * @returns hashed password
+     * The URL for the Redis server.
      */
-    async bcryptHash(password: string): Promise<string>;
+    redisUrl: string = "";
 
     /**
-     * Compare password with hashed password
-     * @param password password
-     * @param hashedPassword hashed password (store in db)
-     * @returns identical return true, otherwise return false
+     * The time-to-live (TTL) for Redis cache in seconds.
      */
-    async bcryptCompare(password: string, hashedPassword: string): Promise<boolean>;
+    redisTTL: number = 10; // Default TTL for Redis cache in seconds
 
     /**
-     * Generate md5 hash
-     * @param str
-     * @returns
+     * The workspace name for Redis, default is "default".
      */
-    md5(str: string): string;
+    redisWorkspace: string = "default";
 
     /**
-     * Generate sha256 hash
-     * @param str
-     * @param secret
-     * @returns
+     * The secret for JWT tokens.
      */
-    hmacSHA256(str: string, secret: string): string;
+    jwtSecret: string = "jwt-secret";
 
     /**
-     * Buffer to base64 encode
-     * @param buffer Buffer to encode
-     * @returns
+     * The issuer for JWT tokens.
      */
-    base64Encode(buffer: Buffer): string;
+    jwtIssuer: string = "jwt-issuer";
 
     /**
-     * Base64 decode to buffer
-     * @param str Base64 string to decode
-     * @returns Buffer
+     * The audience for JWT tokens.
      */
-    base64Decode(str: string): Buffer;
-
-    /**
-     * Generate a random string of given length
-     * @param length Length of the string to generate
-     * @returns Random string
-     */
-    randomString(length: number): string;
+    jwtAudience: string = "jwt-audience";
 }
 ```
 
-### Get package info from package.json
+### Startup
 
 ```ts
-/**
- * Gets the version and name of a package from its package.json file.
- * @param packageFilePath Path to the package.json file
- * @returns
- */
-async function getPackageVersion(packageFilePath: string): Promise<{ version: string; name: string }>;
+export async function startup(module: any, opt: StarterOption);
 ```
-
-## Cache Module
-
-Cache module use environment variable REDIS_URI to get redis connection info, if REDIS_URI is not set, Cache Module will be disabled.
-
-### Decorators
-
--   cached decorator
-
-```ts
-@Cached("demo")
-@Get("demo/sub")
-async getSubjects(): Promise<string[]> {
-    return await this.configurations.getSubjects();
-}
-```
-
--   With query parameters, Cached tag end with ":"
-
-```ts
-@Cached("demo:data:", "10m")
-@Get("demo/data")
-async getData2(@Query("name") name: string): Promise<CommonResponseDto> {
-    const xml = await this.graphs.lanes.getLaneXML(name);
-    return CommonResponseDto.succ(xml);
-}
-
-```
-
--   Revoke cache, tag can be key or with \* to match all keys
-
-```ts
-@RevokeCache("demo:*")
-@Delete("demo/remove")
-async remove(@Query("name") name: string) {
-    await this.graphs.lanes.remove(name);
-    return CommonResponseDto.succ();
-}
-```
-
-### Cache Service
-
-```ts
-@Injectable()
-export class CacheService implements OnModuleDestroy {
-    get disabled(): boolean;
-
-    /**
-     * get or set key value
-     * @param key key
-     * @param ttl ttl in seconds or string like 10m, 1h, 1d
-     * @param callback if key not exists, call this callback to get value, then save to cache
-     * @returns T
-     */
-    async getOrSet<T>(key: string, ttl: number | string | undefined, callback: () => Promise<T>): Promise<T>;
-
-    /**
-     * try to get key value
-     * @param key key
-     * @returns
-     */
-    async get<T>(key: string): Promise<T | undefined>;
-
-    /**
-     * set key value
-     * @param key key
-     * @param value value
-     * @param ttl ttl in seconds
-     * @returns
-     */
-    async set<T>(key: string, value: T, ttl?: number | string): Promise<T>;
-
-    /**
-     * Remove a key
-     * @param key
-     */
-    async remove(key: string): Promise<void>;
-
-    /**
-     * Remove keys by pattern
-     * @param keyPattern
-     */
-    async removeAll(keyPattern: string): Promise<void>;
-
-    /**
-     * Key value exists
-     * @param key
-     * @returns
-     */
-    async has(key: string): Promise<boolean>;
-}
-```
-
-### Cache Revoke Token Service
-
--   Store the revoked tokens
-
-```ts
-@Injectable()
-export class CacheRevokeTokenService {
-    /**
-     * 撤销已发出的Token
-     * @param token
-     */
-    async revokeToken(token: string);
-
-    /**
-     * 是否是已经撤销的Token
-     * @param token
-     */
-    async isTokenRevoked(token: string): Promise<boolean>;
-}
-```
-
-## JWT Guard Module
-
--   Guard for JWT
-    Use environment variable JWT_SECRET to set the jwt secret
