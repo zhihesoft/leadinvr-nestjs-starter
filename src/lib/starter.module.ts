@@ -58,6 +58,7 @@ export class StarterModule extends StarterModuleClass {
             }),
             JwtGuardModule.registerAsync({
                 useFactory: async (option: StarterModuleOptions) => ({
+                    isGlobal: true,
                     redisUrl: option.redisUrl,
                     secret: option.jwtSecret,
                     issuer: option.jwtIssuer,
