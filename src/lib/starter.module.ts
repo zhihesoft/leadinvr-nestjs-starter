@@ -4,24 +4,69 @@ import { CacheModule } from "@leadinvr/cache";
 import { CommonModule } from "@leadinvr/common";
 import { JwtGuardModule } from "@leadinvr/jwt-guard";
 import { LoggerModule } from "@leadinvr/logger";
-import { Module } from "@nestjs/common";
+import { DynamicModule, Global, Module } from "@nestjs/common";
+import { ASYNC_OPTIONS_TYPE, STARTER_OPTION_TOKEN, StarterModuleClass } from "./starter.module-defination";
+import { StarterModuleOptions } from "./starter.module.options";
 
+@Global()
 @Module({
-    imports: [
-        CommonModule,
-        LoggerModule,
-        CacheModule.register({
-            isGlobal: true,
-            redisUrl: process.env.REDIS_URI ?? "",
-            workspace: process.env.WORKSPACE ?? "default",
-            ttl: Number(process.env.CACHE_TTL) ?? 10, // 10s
-        }),
-        JwtGuardModule.register({
-            redisUrl: process.env.REDIS_URI ?? "",
-            secret: process.env.JWT_SECRET ?? "default-secret",
-            issuer: process.env.JWT_ISSUER ?? "default-issuer",
-            audience: process.env.JWT_AUDIENCE ?? "default-audience",
-        }),
-    ],
+    imports: [CommonModule, LoggerModule],
 })
-export class StarterModule {}
+export class StarterModule extends StarterModuleClass {
+    /**
+     * Static register method for the StarterModule.
+     * @param options - The options to configure the module.
+     * @returns A DynamicModule instance.
+     */
+    static register(options: StarterModuleOptions): DynamicModule {
+        const m = super.register(options);
+        m.imports ??= [];
+        m.imports.push(
+            CacheModule.register({
+                redisUrl: options.redisUrl,
+                workspace: options.redisWorkspace,
+                ttl: options.redisTTL,
+            }),
+            JwtGuardModule.register({
+                redisUrl: options.redisUrl,
+                secret: options.jwtSecret,
+                issuer: options.jwtIssuer,
+                audience: options.jwtAudience,
+            }),
+        );
+        return m;
+    }
+
+    /**
+     * Async register method for the StarterModule.
+     * @param options
+     * @returns
+     */
+    static registerAsync(options: typeof ASYNC_OPTIONS_TYPE): DynamicModule {
+        const m = super.registerAsync(options);
+        m.imports ??= [];
+        m.imports.push(
+            CacheModule.registerAsync({
+                isGlobal: true,
+                useFactory: async (option: StarterModuleOptions) => ({
+                    redisUrl: option.redisUrl,
+                    workspace: option.redisWorkspace,
+                    ttl: option.redisTTL,
+                }),
+                inject: [STARTER_OPTION_TOKEN],
+                provideInjectionTokensFrom: m.providers,
+            }),
+            JwtGuardModule.registerAsync({
+                useFactory: async (option: StarterModuleOptions) => ({
+                    redisUrl: option.redisUrl,
+                    secret: option.jwtSecret,
+                    issuer: option.jwtIssuer,
+                    audience: option.jwtAudience,
+                }),
+                inject: [STARTER_OPTION_TOKEN],
+                provideInjectionTokensFrom: m.providers,
+            }),
+        );
+        return m;
+    }
+}
