@@ -18,36 +18,6 @@ export class StarterOption {
     cors: boolean = true;
 
     /**
-     * The URL for the Redis server.
-     */
-    redisUrl: string = "";
-
-    /**
-     * The time-to-live (TTL) for Redis cache in seconds.
-     */
-    redisTTL: number = 10; // Default TTL for Redis cache in seconds
-
-    /**
-     * The workspace name for Redis, default is "default".
-     */
-    redisWorkspace: string = "default";
-
-    /**
-     * The secret for JWT tokens.
-     */
-    jwtSecret: string = "jwt-secret";
-
-    /**
-     * The issuer for JWT tokens.
-     */
-    jwtIssuer: string = "jwt-issuer";
-
-    /**
-     * The audience for JWT tokens.
-     */
-    jwtAudience: string = "jwt-audience";
-
-    /**
      * An optional initialization function that takes an INestApplication instance.
      * This function can be used to perform additional setup or configuration
      * after the application has been created but before it starts listening for requests.
