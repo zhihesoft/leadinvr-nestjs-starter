@@ -1,4 +1,3 @@
-
 /**
  * StarterOption interface for configuring the NestJS application.
  * It includes options for body parser limit, CORS, and an initialization function.
@@ -10,14 +9,9 @@ export class StarterModuleOptions {
     redisUrl: string = "";
 
     /**
-     * The time-to-live (TTL) for Redis cache in seconds.
-     */
-    redisTTL: number = 10; // Default TTL for Redis cache in seconds
-
-    /**
      * The workspace name for Redis, default is "default".
      */
-    redisWorkspace: string = "default";
+    redisWorkspace?: string = "default";
 
     /**
      * The secret for JWT tokens.
@@ -27,10 +21,10 @@ export class StarterModuleOptions {
     /**
      * The issuer for JWT tokens.
      */
-    jwtIssuer: string = "jwt-issuer";
+    jwtIssuer?: string = "jwt-issuer";
 
     /**
      * The audience for JWT tokens.
      */
-    jwtAudience: string = "jwt-audience";
+    jwtAudience?: string = "jwt-audience";
 }
